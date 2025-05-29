@@ -1,8 +1,7 @@
 "use client";
 
 import { Button } from "@repo/ui/button";
-import { Card } from "@repo/ui/card";
-import { Home, Users, Plus, Settings, LogOut, User } from "lucide-react";
+import { Home, Users, Plus, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 

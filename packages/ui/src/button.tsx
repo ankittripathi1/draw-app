@@ -1,13 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
-
 interface ButtonProps {
   variant?: "primary" | "outline" | "secondary";
   className?: string;
   onClick?: () => void;
   size?: "lg" | "sm";
-  children: ReactNode;
+  children: React.ReactNode;
   disabled?: boolean;
 }
 

@@ -49,8 +49,9 @@ export function QuickCreateRoom({
         }
         setRoomName("");
       }
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Failed to create room");
+    } catch (error) {
+      console.error("Failed to create room:", error);
+      alert("Failed to create room");
     } finally {
       setLoading(false);
     }

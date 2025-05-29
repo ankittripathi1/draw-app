@@ -1,3 +1,5 @@
+import { Shape } from './canvas';
+
 // WebSocket and API Types
 export interface SocketMessage {
   type: string;

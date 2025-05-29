@@ -148,11 +148,8 @@ export default function DiscoverPage() {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="h-4 w-4" />
-                    {room.chatCount} messages
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    Created by {room.adminName}
-                  </div>
+                  <div className="text-sm text-muted-foreground">Hello</div>
                 </div>
 
                 <div className="flex gap-2">

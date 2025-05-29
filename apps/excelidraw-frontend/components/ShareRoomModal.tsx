@@ -2,7 +2,7 @@
 
 import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
-import { Copy, Share2, QrCode, Mail, MessageSquare, X } from "lucide-react";
+import { Copy, Mail, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
 
 interface ShareRoomModalProps {
