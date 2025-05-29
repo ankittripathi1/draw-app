@@ -1,60 +1,144 @@
-import { Tool } from "@/components/Canvas";
+import { Tool, Shape } from "@/types";
 import { getExistingShapes } from "./http";
-
-type Shape = {
-    type: "rect";
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-} | {
-    type: "circle";
-    centerX: number;
-    centerY: number;
-    radius: number;
-} | {
-    type: "pencil";
-    startX: number;
-    startY: number;
-    endX: number;
-    endY: number;
-}
+import { CanvasRenderer } from "./CanvasRenderer";
+import { MouseHandler } from "./MouseHandler";
+import { ShapeBuilder } from "./ShapeBuilder";
 
 export class Game {
-
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
+    private renderer: CanvasRenderer;
+    private mouseHandler: MouseHandler;
     private existingShapes: Shape[]
     private roomId: string;
-    private clicked: boolean;
-    private startX = 0;
-    private startY = 0;
     private selectedTool: Tool = "circle";
+    
+    // Zoom and pan state
+    private scale = 1;
+    private offsetX = 0;
+    private offsetY = 0;
+    private minScale = 0.1;
+    private maxScale = 5;
 
     socket: WebSocket;
 
     constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d")!;
+        this.renderer = new CanvasRenderer(canvas);
+        this.mouseHandler = new MouseHandler(canvas);
         this.existingShapes = [];
         this.roomId = roomId;
         this.socket = socket;
-        this.clicked = false;
         this.init();
         this.initHandlers();
-        this.initMouseHandlers();
+        this.setupMouseHandlers();
+        this.updateRendererTransform();
     }
     
     destroy() {
-        this.canvas.removeEventListener("mousedown", this.mouseDownHandler)
-
-        this.canvas.removeEventListener("mouseup", this.mouseUpHandler)
-
-        this.canvas.removeEventListener("mousemove", this.mouseMoveHandler)
+        this.mouseHandler.destroy();
     }
 
-    setTool(tool: "circle" | "pencil" | "rect") {
+    setTool(tool: Tool) {
         this.selectedTool = tool;
+        this.mouseHandler.setTool(tool);
+    }
+
+    // Zoom and pan methods
+    private updateRendererTransform() {
+        this.renderer.setTransform(this.scale, this.offsetX, this.offsetY);
+    }
+
+    private zoom(delta: number, point: { x: number; y: number }) {
+        const newScale = Math.max(this.minScale, Math.min(this.maxScale, this.scale + delta));
+        
+        if (newScale !== this.scale) {
+            // Zoom towards the mouse position
+            const worldPoint = this.renderer.screenToWorld(point);
+            
+            this.scale = newScale;
+            this.updateRendererTransform();
+            
+            // Adjust offset to keep the world point under the mouse
+            const newScreenPoint = this.renderer.worldToScreen(worldPoint);
+            this.offsetX += point.x - newScreenPoint.x;
+            this.offsetY += point.y - newScreenPoint.y;
+            
+            this.updateRendererTransform();
+            this.clearCanvas();
+        }
+    }
+
+    private pan(deltaX: number, deltaY: number) {
+        this.offsetX += deltaX;
+        this.offsetY += deltaY;
+        this.updateRendererTransform();
+        this.clearCanvas();
+    }
+
+    // Reset zoom and pan to default
+    resetView() {
+        this.scale = 1;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.updateRendererTransform();
+        this.clearCanvas();
+    }
+
+    // Center view on content
+    centerView() {
+        if (this.existingShapes.length === 0) {
+            this.resetView();
+            return;
+        }
+
+        // Calculate bounds of all shapes
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        
+        this.existingShapes.forEach(shape => {
+            if (shape.type === "rect") {
+                minX = Math.min(minX, shape.x);
+                minY = Math.min(minY, shape.y);
+                maxX = Math.max(maxX, shape.x + shape.width);
+                maxY = Math.max(maxY, shape.y + shape.height);
+            } else if (shape.type === "circle") {
+                minX = Math.min(minX, shape.centerX - shape.radius);
+                minY = Math.min(minY, shape.centerY - shape.radius);
+                maxX = Math.max(maxX, shape.centerX + shape.radius);
+                maxY = Math.max(maxY, shape.centerY + shape.radius);
+            } else if (shape.type === "pencil") {
+                shape.points.forEach(point => {
+                    minX = Math.min(minX, point.x);
+                    minY = Math.min(minY, point.y);
+                    maxX = Math.max(maxX, point.x);
+                    maxY = Math.max(maxY, point.y);
+                });
+            }
+        });
+
+        // Add padding
+        const padding = 50;
+        minX -= padding;
+        minY -= padding;
+        maxX += padding;
+        maxY += padding;
+
+        // Calculate scale to fit content
+        const contentWidth = maxX - minX;
+        const contentHeight = maxY - minY;
+        const scaleX = this.canvas.width / contentWidth;
+        const scaleY = this.canvas.height / contentHeight;
+        this.scale = Math.min(scaleX, scaleY, this.maxScale);
+
+        // Center the content
+        const centerX = (minX + maxX) / 2;
+        const centerY = (minY + maxY) / 2;
+        this.offsetX = this.canvas.width / 2 - centerX * this.scale;
+        this.offsetY = this.canvas.height / 2 - centerY * this.scale;
+
+        this.updateRendererTransform();
+        this.clearCanvas();
     }
 
     async init() {
@@ -76,97 +160,77 @@ export class Game {
     }
 
     clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = "rgba(0, 0, 0)"
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.existingShapes.map((shape) => {
-            if (shape.type === "rect") {
-                this.ctx.strokeStyle = "rgba(255, 255, 255)"
-                this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
-            } else if (shape.type === "circle") {
-                console.log(shape);
-                this.ctx.beginPath();
-                this.ctx.arc(shape.centerX, shape.centerY, Math.abs(shape.radius), 0, Math.PI * 2);
-                this.ctx.stroke();
-                this.ctx.closePath();                
-            }
-        })
+        this.renderer.renderFrame(this.existingShapes);
     }
 
-    mouseDownHandler = (e) => {
-        this.clicked = true
-        this.startX = e.clientX
-        this.startY = e.clientY
-    }
-    mouseUpHandler = (e) => {
-        this.clicked = false
-        const width = e.clientX - this.startX;
-        const height = e.clientY - this.startY;
-
-        const selectedTool = this.selectedTool;
-        let shape: Shape | null = null;
-        if (selectedTool === "rect") {
-
-            shape = {
-                type: "rect",
-                x: this.startX,
-                y: this.startY,
-                height,
-                width
+    private setupMouseHandlers() {
+        this.mouseHandler.setCallbacks({
+            onDrawStart: () => {
+                // Drawing started - no action needed
+            },
+            onDrawMove: (currentPoint, startPoint, tool, pencilPath) => {
+                // Create preview shape during drawing
+                let previewShape: Shape | null = null;
+                
+                if (tool === "pencil" && pencilPath && pencilPath.length > 1) {
+                    previewShape = ShapeBuilder.createPencilStroke(pencilPath);
+                } else if (tool !== "pencil") {
+                    previewShape = ShapeBuilder.createPreviewShape(
+                        tool,
+                        startPoint.x,
+                        startPoint.y,
+                        currentPoint.x,
+                        currentPoint.y
+                    );
+                }
+                
+                if (previewShape) {
+                    this.renderer.renderFrame(this.existingShapes, previewShape);
+                }
+            },
+            onDrawEnd: (endPoint, startPoint, tool, pencilPath) => {
+                // Create final shape
+                let shape: Shape | null = null;
+                
+                if (tool === "pencil" && pencilPath && pencilPath.length > 1) {
+                    shape = ShapeBuilder.createPencilStroke(pencilPath);
+                } else if (tool === "rect") {
+                    shape = ShapeBuilder.createRectangle(
+                        startPoint.x,
+                        startPoint.y,
+                        endPoint.x,
+                        endPoint.y
+                    );
+                } else if (tool === "circle") {
+                    shape = ShapeBuilder.createCircle(
+                        startPoint.x,
+                        startPoint.y,
+                        endPoint.x,
+                        endPoint.y
+                    );
+                }
+                
+                if (shape) {
+                    this.existingShapes.push(shape);
+                    this.clearCanvas();
+                    
+                    // Send shape to server
+                    this.socket.send(JSON.stringify({
+                        type: "chat",
+                        message: JSON.stringify({ shape }),
+                        roomId: this.roomId
+                    }));
+                }
+            },
+            onZoom: (delta, point) => {
+                this.zoom(delta, point);
+            },
+            onPan: (deltaX, deltaY) => {
+                this.pan(deltaX, deltaY);
+            },
+            transformPoint: (screenPoint) => {
+                return this.renderer.screenToWorld(screenPoint);
             }
-        } else if (selectedTool === "circle") {
-            const radius = Math.max(width, height) / 2;
-            shape = {
-                type: "circle",
-                radius: radius,
-                centerX: this.startX + radius,
-                centerY: this.startY + radius,
-            }
-        }
-
-        if (!shape) {
-            return;
-        }
-
-        this.existingShapes.push(shape);
-
-        this.socket.send(JSON.stringify({
-            type: "chat",
-            message: JSON.stringify({
-                shape
-            }),
-            roomId: this.roomId
-        }))
-    }
-    mouseMoveHandler = (e) => {
-        if (this.clicked) {
-            const width = e.clientX - this.startX;
-            const height = e.clientY - this.startY;
-            this.clearCanvas();
-            this.ctx.strokeStyle = "rgba(255, 255, 255)"
-            const selectedTool = this.selectedTool;
-            console.log(selectedTool)
-            if (selectedTool === "rect") {
-                this.ctx.strokeRect(this.startX, this.startY, width, height);   
-            } else if (selectedTool === "circle") {
-                const radius = Math.max(width, height) / 2;
-                const centerX = this.startX + radius;
-                const centerY = this.startY + radius;
-                this.ctx.beginPath();
-                this.ctx.arc(centerX, centerY, Math.abs(radius), 0, Math.PI * 2);
-                this.ctx.stroke();
-                this.ctx.closePath();                
-            }
-        }
-    }
-
-    initMouseHandlers() {
-        this.canvas.addEventListener("mousedown", this.mouseDownHandler)
-
-        this.canvas.addEventListener("mouseup", this.mouseUpHandler)
-
-        this.canvas.addEventListener("mousemove", this.mouseMoveHandler)    
-
+        });
     }
 }

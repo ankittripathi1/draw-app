@@ -1,72 +1,69 @@
-import { initDraw } from "@/draw";
 import { useEffect, useRef, useState } from "react";
-import { IconButton } from "./IconButton";
-import { Circle, Pencil, RectangleHorizontalIcon } from "lucide-react";
 import { Game } from "@/draw/Game";
-
-export type Tool = "circle" | "rect" | "pencil";
+import { Tool, RoomInfo } from "@/types";
+import { CanvasBackground } from "./canvas/CanvasBackground";
+import { FloatingControlPanel } from "./canvas/FloatingControlPanel";
 
 export function Canvas({
-    roomId,
-    socket
+  roomId,
+  socket,
+  roomInfo,
+  onShareRoom,
 }: {
-    socket: WebSocket;
-    roomId: string;
+  socket: WebSocket;
+  roomId: string;
+  roomInfo: RoomInfo | null;
+  onShareRoom: () => void;
 }) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [game, setGame] = useState<Game>();
-    const [selectedTool, setSelectedTool] = useState<Tool>("circle")
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [game, setGame] = useState<Game>();
+  const [selectedTool, setSelectedTool] = useState<Tool>("circle");
 
-    useEffect(() => {
-        game?.setTool(selectedTool);
-    }, [selectedTool, game]);
+  useEffect(() => {
+    game?.setTool(selectedTool);
+  }, [selectedTool, game]);
 
-    useEffect(() => {
+  useEffect(() => {
+    if (canvasRef.current) {
+      const g = new Game(canvasRef.current, roomId, socket);
+      setGame(g);
 
+      // Handle window resize to update canvas dimensions
+      const handleResize = () => {
         if (canvasRef.current) {
-            const g = new Game(canvasRef.current, roomId, socket);
-            setGame(g);
-
-            return () => {
-                g.destroy();
-            }
+          canvasRef.current.width = window.innerWidth;
+          canvasRef.current.height = window.innerHeight;
         }
+      };
 
+      window.addEventListener("resize", handleResize);
 
-    }, [canvasRef]);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        g.destroy();
+      };
+    }
+  }, [canvasRef, roomId, socket]);
 
-    return <div style={{
-        height: "100vh",
-        overflow: "hidden"
-    }}>
-        <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
-        <Topbar setSelectedTool={setSelectedTool} selectedTool={selectedTool} />
-    </div>
-}
-
-function Topbar({selectedTool, setSelectedTool}: {
-    selectedTool: Tool,
-    setSelectedTool: (s: Tool) => void
-}) {
-    return <div style={{
-            position: "fixed",
-            top: 10,
-            left: 10
-        }}>
-            <div className="flex gap-t">
-                <IconButton 
-                    onClick={() => {
-                        setSelectedTool("pencil")
-                    }}
-                    activated={selectedTool === "pencil"}
-                    icon={<Pencil />}
-                />
-                <IconButton onClick={() => {
-                    setSelectedTool("rect")
-                }} activated={selectedTool === "rect"} icon={<RectangleHorizontalIcon />} ></IconButton>
-                <IconButton onClick={() => {
-                    setSelectedTool("circle")
-                }} activated={selectedTool === "circle"} icon={<Circle />}></IconButton>
-            </div>
-        </div>
+  return (
+    <CanvasBackground>
+      <canvas
+        ref={canvasRef}
+        width={window.innerWidth}
+        height={window.innerHeight}
+        className="absolute inset-0 cursor-crosshair drop-shadow-sm z-10 select-none"
+        style={{
+          background: "transparent",
+          touchAction: "none", // Prevent touch scrolling
+        }}
+      />
+      <FloatingControlPanel
+        selectedTool={selectedTool}
+        setSelectedTool={setSelectedTool}
+        roomInfo={roomInfo}
+        roomId={roomId}
+        onShareRoom={onShareRoom}
+      />
+    </CanvasBackground>
+  );
 }
