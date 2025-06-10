@@ -30,7 +30,6 @@ app.post("/signup", async (req, res) => {
                 name: parsedData.data.name
             }
         })
-        console.log("User created", user);
         res.json({
             userId: user.id
         })
