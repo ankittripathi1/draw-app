@@ -8,6 +8,10 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "engines": {
+    "node": "20.x",
+    "pnpm": "8.x"
+  },
   "dependencies": {
     "@repo/ui": "workspace:*",
     "axios": "^1.7.9",

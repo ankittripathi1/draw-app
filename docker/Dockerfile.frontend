@@ -1,0 +1,22 @@
+
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+ARG DATABASE_URL
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+
+COPY . .
+
+
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm run db:migrate
+
+RUN DATABASE_URL=${DATABASE_URL} pnpm --filter excalidraw-frontend build
+
+EXPOSE 3000
+
+CMD ["pnpm","--filter","frontend", "start"]

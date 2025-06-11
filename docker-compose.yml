@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: backend
+    environment:
+       DATABASE_URL: postgres://postgres:password@postgres:5432/mydb
+    depends_on:
+      - postgres
+    ports:
+      - "8001:8001"
+  
+  ws:
+    build:
+      context: .
+      dockerfile: apps/ws/Dockerfile
+    container_name: websocket
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: frontend
+    environment:
+      DATABASE_URL: postgres://postgres:password@postgres:5432/mydb
+      NEXT_PUBLIC_API_BASE_URL: http://backend:8001
+    depends_on:
+      - backend
+      - ws
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

@@ -6,7 +6,11 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "postinstall": "npx prisma generate"
+    "postinstall": "npx prisma generate",
+    "db:migrate": "cd packages/db && npx prisma generate && cd ../..",
+    "start:frontend": "cd apps/excalidraw-frontend && pnpm run start",
+    "start:backend": "cd apps/http-backend && pnpm run start",
+    "start:websocket": "cd apps/ws-backend && pnpm run start",
   },
   "devDependencies": {
     "prettier": "^3.2.5",
