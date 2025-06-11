@@ -2,20 +2,19 @@
   "name": "draw-app",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "db:migrate": " cd ../..",
-    "start:frontend": "cd apps/excalidraw-frontend && pnpm run start",
-    "start:backend": "cd apps/http-backend && pnpm run start",
-    "start:websocket": "cd apps/ws-backend && pnpm run start"
+    "check-types": "turbo run check-types"
   },
-  "displayName": "draw-app",
   "devDependencies": {
     "prettier": "^3.2.5",
     "turbo": "^2.3.3",
     "typescript": "5.5.4"
   },
-  "packageManager": "pnpm@9.0.4"
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
+  }
 }
