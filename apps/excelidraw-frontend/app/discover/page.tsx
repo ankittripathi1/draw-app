@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
 import { Card } from "@repo/ui/card";
 import { Users, Calendar, ExternalLink, Plus, Search } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -8,6 +7,7 @@ import Link from "next/link";
 import { HTTP_BACKEND } from "@/config";
 import { Room } from "@/types";
 import axios from "axios";
+import { Button } from "@/components/ui";
 
 export default function DiscoverPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -67,7 +67,7 @@ export default function DiscoverPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background " >
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -100,7 +100,7 @@ export default function DiscoverPage() {
               placeholder="Search rooms..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="w-full pl-10 pr-4 py-2 border-2 border-[#321B15]/20 rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none  focus:border-[#321B15]"
             />
           </div>
         </div>

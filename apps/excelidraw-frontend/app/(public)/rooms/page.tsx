@@ -136,13 +136,12 @@ export default function RoomsPage() {
               <Button
                 onClick={() => setShowJoinForm(true)}
                 variant="outline"
-                className="flex items-center gap-2"
               >
                 <ExternalLink className="h-4 w-4" />
                 Join Room
               </Button>
               <Link href="/create-room">
-                <Button className="flex items-center gap-2">
+                <Button >
                   <Plus className="h-4 w-4" />
                   Create Room
                 </Button>
@@ -215,7 +214,7 @@ export default function RoomsPage() {
               description="Create your first drawing room to start collaborating with your team"
               action={
                 <Link href="/create-room">
-                  <Button variant="primary" size="lg">
+                  <Button variant="primary" >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Room
                   </Button>
@@ -236,7 +235,6 @@ export default function RoomsPage() {
                   </h3>
                   <div className="flex gap-2">
                     <Button
-                      size="sm"
                       variant="outline"
                       onClick={() => copyRoomLink(room.id.toString())}
                     >
@@ -258,7 +256,7 @@ export default function RoomsPage() {
                 </div>
                 <div className="flex gap-2">
                   <Link href={`/canvas/${room.id}`} className="flex-1">
-                    <Button variant="primary" size="sm" className="w-full">
+                    <Button variant="primary" >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       Open Room
                     </Button>
@@ -272,7 +270,7 @@ export default function RoomsPage() {
         {/* Back to Home */}
         <div className="mt-12 text-center">
           <Link href="/">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" >
               Back to Home
             </Button>
           </Link>

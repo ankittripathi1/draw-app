@@ -73,7 +73,7 @@ export default function CreateRoomPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/rooms">
-            <Button variant="outline" size="sm" className="mb-6">
+            <Button variant="outline" >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Rooms
             </Button>

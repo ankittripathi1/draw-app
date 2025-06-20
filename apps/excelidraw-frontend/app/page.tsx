@@ -1,4 +1,4 @@
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui";
 import { Card } from "@repo/ui/card";
 import {
   Pencil,
@@ -7,14 +7,18 @@ import {
   Sparkles,
   Github,
   Download,
+  Router,
 } from "lucide-react";
 import Link from "next/link";
+import Navbar from "@/components/Navbar"
 
 function App() {
   return (
-    <div className="min-h-screen bg-background">
+    <>
+    <Navbar/>
+    <div className="min-h-screen bg-background items-center flex flex-col ">
       {/* Hero Section */}
-      <header className="relative overflow-hidden">
+      <header className="relative overflow-hidden mt-32">
         <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl text-foreground">
@@ -27,13 +31,13 @@ function App() {
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link href={"/rooms"}>
-                <Button variant={"primary"} size="lg" className="h-12 px-6">
+                <Button variant="primary">
                   My Rooms
                   <Pencil className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/signin">
-                <Button variant="outline" size="lg" className="h-12 px-6">
+                <Button variant="outline" >
                   Sign in
                 </Button>
               </Link>
@@ -43,7 +47,7 @@ function App() {
       </header>
 
       {/* Features Section */}
-      <section className="py-24 bg-muted/50">
+      <section className="py-24 bg-muted/50 w-full">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
             <Card className="p-6 border-2 hover:border-primary transition-colors">
@@ -146,6 +150,7 @@ function App() {
         </div>
       </footer>
     </div>
+</>
   );
 }
 
