@@ -7,7 +7,6 @@ import {
   Sparkles,
   Github,
   Download,
-  Router,
 } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar"
@@ -108,7 +107,7 @@ function App() {
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <Link href="/rooms">
-                  <Button size="lg" variant="secondary" className="h-12 px-6">
+                  <Button  variant="outline" className="h-12 px-6">
                     Browse Rooms
                     <Pencil className="ml-2 h-4 w-4" />
                   </Button>
@@ -116,7 +115,6 @@ function App() {
                 <Link href="/discover">
                   <Button
                     variant="outline"
-                    size="lg"
                     className="h-12 px-6 bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary"
                   >
                     Discover Public Rooms

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@repo/ui/card";
 import { Copy, Mail, MessageSquare, X } from "lucide-react";
 import { useState } from "react";
@@ -49,7 +49,7 @@ export function ShareRoomModal({
       <Card className="p-6 max-w-md w-full mx-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Share Room</h3>
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button variant="outline"  onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
@@ -75,7 +75,6 @@ export function ShareRoomModal({
               />
               <Button
                 variant="outline"
-                size="sm"
                 onClick={copyToClipboard}
                 className={copied ? "bg-green-100 text-green-700" : ""}
               >

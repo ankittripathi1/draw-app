@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@repo/ui/card";
 import { Plus, Users, Calendar, ExternalLink, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -165,7 +165,7 @@ export default function RoomsPage() {
                     className="flex-1 px-3 py-2 border border-border rounded-md bg-background"
                     onKeyPress={(e) => e.key === "Enter" && createRoom()}
                   />
-                  <Button onClick={createRoom} disabled={createLoading}>
+                  <Button onClick={createRoom} >
                     {createLoading ? "Creating..." : "Create"}
                   </Button>
                   <Button

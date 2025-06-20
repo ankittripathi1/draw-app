@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@repo/ui/card";
 import { ArrowLeft, Plus, Users, Sparkles, PenTool } from "lucide-react";
 import { useState } from "react";
@@ -108,7 +108,6 @@ export default function CreateRoomPage() {
             <div className="pt-4 border-t">
               <Button
                 onClick={createRoom}
-                size="lg"
                 variant="primary"
                 className={`w-full ${loading || !roomName.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
               >

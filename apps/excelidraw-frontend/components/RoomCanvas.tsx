@@ -4,7 +4,7 @@ import { WS_URL, HTTP_BACKEND } from "@/config";
 import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
 import { ShareRoomModal } from "./ShareRoomModal";
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { RoomInfo } from "@/types";
 import axios from "axios";
@@ -107,13 +107,12 @@ export function RoomCanvas({ roomId }: { roomId: string }) {
           <div className="flex gap-3 justify-center">
             <Button
               variant="primary"
-              size="sm"
               onClick={() => window.location.reload()}
             >
               Try Again
             </Button>
             <Link href="/rooms">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" >
                 Back to Rooms
               </Button>
             </Link>

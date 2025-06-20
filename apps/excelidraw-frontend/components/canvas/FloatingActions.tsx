@@ -9,7 +9,6 @@ export function FloatingActions() {
           className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group transform hover:scale-105 active:scale-95"
         >
           <Download
-            size={20}
             className="group-hover:scale-110 transition-transform duration-200"
           />
         </button>
@@ -18,7 +17,6 @@ export function FloatingActions() {
           className="p-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group transform hover:scale-105 active:scale-95"
         >
           <Trash2
-            size={20}
             className="group-hover:scale-110 transition-transform duration-200"
           />
         </button>
@@ -27,7 +25,6 @@ export function FloatingActions() {
           className="p-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group transform hover:scale-105 active:scale-95"
         >
           <Palette
-            size={20}
             className="group-hover:scale-110 transition-transform duration-200"
           />
         </button>

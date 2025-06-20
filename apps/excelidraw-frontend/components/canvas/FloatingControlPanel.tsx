@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { IconButton } from "../IconButton";
 import { Tool, RoomInfo } from "@/types";
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
 interface FloatingControlPanelProps {
@@ -46,7 +46,7 @@ export function FloatingControlPanel({
           className="p-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200"
           title={isExpanded ? "Close Panel" : "Open Panel"}
         >
-          {isExpanded ? <X size={20} /> : <Menu size={20} />}
+          {isExpanded ? <X  /> : <Menu  />}
         </button>
       </div>
 
@@ -60,7 +60,7 @@ export function FloatingControlPanel({
                 {roomInfo?.slug || `Room ${roomId}`}
               </h2>
               <Link href="/rooms">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Exit
                 </Button>
@@ -84,7 +84,6 @@ export function FloatingControlPanel({
             </div>
             <Button
               variant="outline"
-              size="sm"
               onClick={onShareRoom}
               className="w-full flex items-center gap-2"
             >

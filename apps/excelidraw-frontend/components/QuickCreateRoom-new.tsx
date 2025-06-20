@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Plus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { HTTP_BACKEND } from "@/config";
@@ -78,7 +78,6 @@ export function QuickCreateRoom({
           <Button
             onClick={createRoom}
             variant="primary"
-            size="lg"
             className={`flex items-center gap-2 ${loading || !roomName.trim() ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {loading ? (
@@ -90,7 +89,7 @@ export function QuickCreateRoom({
           </Button>
 
           {onCancel && (
-            <Button onClick={onCancel} variant="outline" size="lg">
+            <Button onClick={onCancel} variant="outline" >
               Cancel
             </Button>
           )}

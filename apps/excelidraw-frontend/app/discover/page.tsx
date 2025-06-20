@@ -82,7 +82,6 @@ export default function DiscoverPage() {
           <Link href="/create-room">
             <Button
               variant="primary"
-              size="lg"
               className="flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
@@ -120,7 +119,7 @@ export default function DiscoverPage() {
               </p>
               {!searchTerm && (
                 <Link href="/create-room">
-                  <Button variant="primary" size="lg">
+                  <Button variant="primary" >
                     <Plus className="h-4 w-4 mr-2" />
                     Create First Room
                   </Button>
@@ -156,7 +155,6 @@ export default function DiscoverPage() {
                   <Button
                     onClick={() => joinRoom(room.id)}
                     variant="primary"
-                    size="sm"
                     className="flex-1 flex items-center justify-center gap-2"
                   >
                     <ExternalLink className="h-4 w-4" />
@@ -171,7 +169,7 @@ export default function DiscoverPage() {
         {/* Back to Home */}
         <div className="mt-12 text-center">
           <Link href="/">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" >
               Back to Home
             </Button>
           </Link>
