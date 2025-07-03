@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { X, Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
@@ -26,6 +26,28 @@ export default function Navbar() {
   const handleMenu = () => {
     setIsOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 786) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  });
 
   return (
     <header
@@ -89,4 +111,3 @@ export default function Navbar() {
     </header>
   );
 }
-
