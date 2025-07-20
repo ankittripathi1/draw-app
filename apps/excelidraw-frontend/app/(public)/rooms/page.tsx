@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { Card } from "@repo/ui/card";
+import Card from "@repo/ui/card";
 import { Plus, Users, Calendar, ExternalLink, Copy } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";

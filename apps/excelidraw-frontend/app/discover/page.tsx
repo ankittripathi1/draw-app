@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@repo/ui/card";
+import Card from "@repo/ui/card";
 import { Users, Calendar, ExternalLink, Plus, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";

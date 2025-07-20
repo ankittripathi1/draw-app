@@ -1,113 +1,97 @@
 "use client";
-import { Button } from "@/components/ui/Button";
+import * as React from "react";
 import Link from "next/link";
-import { X, Menu } from "lucide-react";
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { Button } from "./ui";
+import { useTheme } from "next-themes";
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const navItems = [
-    {
-      label: "Home",
-      href: "#",
-    },
-    {
-      label: "Features",
-      href: "#",
-    },
-    {
-      label: "Discover",
-      href: "/discover",
-    },
-  ];
+const menuItems = [
+  { name: "Home", href: "#" },
+  {
+    name: "Features",
+    href: "#",
+  },
+  {
+    name: "Discover",
+    href: "/discover",
+  },
+];
 
-  const handleMenu = () => {
-    setIsOpen((prev) => !prev);
+export const Navbar = () => {
+  const [menuState, setMenuState] = React.useState(false);
+
+  const { setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 786) {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  });
-
   return (
-    <header
-      className={cn(
-        "flex items-center h-14 fixed top-0 z-50 w-full px-4 md:px-20 transition-all duration-300",
-        isScrolled
-          ? "bg-background/80 backdrop-blur-sm shadow-sm"
-          : "bg-transparent",
-      )}
-    >
-      <nav className="flex items-center justify-between w-full">
-        {/* logo */}
-        <h1 className="text-2xl font-bold cursor-pointer">Sketch Forge</h1>
-        {/* Desktop Navigation */}
-        <div className="gap-x-10 hidden md:flex ">
-          <ul className="flex gap-x-8 items-center text-base font-semibold ">
-            {navItems.map((item, idx) => {
-              return (
-                <Link className="cursor-pointer" href={item.href} key={idx}>
-                  {item.label}
-                </Link>
-              );
-            })}
-          </ul>
-          <Button className="">Login</Button>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-2 rounded-md hover:bg-accent transition-colors"
-          onClick={handleMenu}
-          aria-label="toggle-menu"
-        >
-          {isOpen ? <X /> : <Menu />}
-        </button>
-        {/* Mobile Menu Overlay */}
-        <div
-          className={cn(
-            "fixed top-14 right-0 w-full max-w-xs h-[calc(100vh-3.5rem)] bg-background shadow-lg md:hidden z-50",
-            "transform transition-transform duration-300 ease-in-out",
-            isOpen ? "translate-x-0" : "translate-x-full",
-          )}
-        >
-          <ul className="flex flex-col p-4 space-y-4">
-            {navItems.map((item, idx) => (
+    <header>
+      <nav
+        data-state={menuState && "active"}
+        className="group fixed z-20 w-full border-b border-dashed bg-white backdrop-blur md:relative dark:bg-zinc-950/50 lg:dark:bg-transparent"
+      >
+        <div className="m-auto max-w-5xl px-6">
+          <div className="flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
+            <div className="flex w-full justify-between lg:w-auto">
               <Link
-                className="block px-4 py-2 rounded-md hove:bg-accent transition-colors"
-                href={item.href}
-                key={idx}
-                onClick={() => setIsOpen(false)}
+                href="/"
+                aria-label="home"
+                className="flex items-center space-x-2"
               >
-                {item.label}
+                <span className="text-xl font-bold text-foreground">
+                  Sketch Forge
+                </span>
               </Link>
-            ))}
-            <li className="mt-4">
-              <Button className="w-full">Login</Button>
-            </li>
-          </ul>
+
+              <button
+                onClick={() => setMenuState(!menuState)}
+                aria-label={menuState == true ? "Close Menu" : "Open Menu"}
+                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+              >
+                <Menu className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+              </button>
+            </div>
+
+            <div className="bg-background group-data-[state=active]:block lg:group-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+              <div className="lg:pr-4">
+                <ul className="space-y-6 text-base lg:flex lg:gap-8 lg:space-y-0 lg:text-sm">
+                  {menuItems.map((item, index) => (
+                    <li key={index}>
+                      <Link
+                        href={item.href}
+                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                      >
+                        <span>{item.name}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit lg:border-l lg:pl-6">
+                <Button variant="outline" size="icon" onClick={toggleTheme} className="bg-transparent">
+                  <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+                  <Moon className="absolute h-[1.0rem] w-[1.0rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+                <Button asChild variant="outline" size="sm" className="bg-transparent">
+                  <Link href="#">
+                    <span>Login</span>
+                  </Link>
+                </Button>
+                <Button asChild size="sm" className="">
+                  <Link href="#">
+                    <span className="dark:text-white">Sign Up</span>
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
     </header>
+
   );
-}
+};

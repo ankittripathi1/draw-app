@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { Card } from "@repo/ui/card";
+import Card from "@repo/ui/card";
 import { ArrowLeft, Plus, Users, Sparkles, PenTool } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
