@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { IconButton } from "../IconButton";
 import { Tool, RoomInfo } from "@/types";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui";
 import Link from "next/link";
 
 interface FloatingControlPanelProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui";
 import Card from "@repo/ui/card";
 import { Copy, Mail, MessageSquare, X } from "lucide-react";
 import { useState } from "react";

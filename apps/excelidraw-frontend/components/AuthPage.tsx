@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { Button, Input, Label } from "@/components/ui";
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const [name, setName] = useState("");
 
   const handleSignIn = async () => {
-    const response = await fetch("http://localhost:3001/signin", {
+    const response = await fetch("http://localhost:8001/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +37,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   };
 
   const handleSignUp = async () => {
-    const response = await fetch("http://localhost:3001/signup", {
+    const response = await fetch("http://localhost:8001/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,53 +66,59 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   };
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
-      <div className="p-6 m-2 bg-white rounded">
-        <div className="p-2">
-          <input
-            type="text"
-            value={name}
-            placeholder="Name"
-            className={`${isSignin === true ? "hidden" : ""}`}
-            onChange={(e) => setName(e.target.value)}
-          ></input>
+    <div className="w-screen h-screen flex justify-center items-center bg-white dark:bg-transparent">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {isSignin ? "Sign in to your account" : "Create an account"}
+          </h1>
         </div>
-        <div className="p-2">
-          <input
-            type="text"
-            value={email}
-            placeholder="Email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          ></input>
-        </div>
-        <div className="p-2">
-          <input
-            type="password"
-            value={password}
-            placeholder="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          ></input>
-        </div>
-
-        <div className="pt-2">
-          <button
-            className="bg-red-200 rounded p-2"
+        <div className="space-y-6">
+          {!isSignin && (
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                placeholder="Your name"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+          )}
+          <div className="space-y-2">
+            <Label htmlFor="email">Email address</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              placeholder="email@example.com"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              placeholder="••••••••"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <Button
+            variant="primary"
+            className="w-full"
             onClick={() => {
               if (isSignin) {
-                console.log("Signing in...");
                 handleSignIn();
               } else {
-                console.log("Signing up...");
                 handleSignUp();
               }
             }}
           >
             {isSignin ? "Sign in" : "Sign up"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

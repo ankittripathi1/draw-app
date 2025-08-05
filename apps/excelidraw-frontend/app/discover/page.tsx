@@ -7,7 +7,7 @@ import Link from "next/link";
 import { HTTP_BACKEND } from "@/config";
 import { Room } from "@/types";
 import axios from "axios";
-import { Button } from "@/components/ui";
+import { Button, LoadingState } from "@/components/ui";
 
 export default function DiscoverPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -60,116 +60,100 @@ export default function DiscoverPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-lg">Loading rooms...</div>
-      </div>
+      <LoadingState
+        title="Loading your rooms..."
+        description="Please wait while we fetch your drawing rooms"
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-background " >
+    <div className="min-h-screen">
       <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">
-              Discover Rooms
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Explore and join drawing rooms created by the community
-            </p>
-          </div>
-          <Link href="/create-room">
-            <Button
-              variant="primary"
-              className="flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Create Room
-            </Button>
-          </Link>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            Discover Public Rooms
+          </h1>
+          <p className="mt-4 text-xl text-muted-foreground">
+            Explore and join drawing rooms created by the community.
+          </p>
         </div>
 
-        {/* Search */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <div className="mb-8 max-w-2xl mx-auto">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
             <input
               type="text"
-              placeholder="Search rooms..."
+              placeholder="Search by room name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border-2 border-[#321B15]/20 rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none  focus:border-[#321B15]"
+              className="w-full pl-12 pr-4 py-3 border-2 border-border rounded-full bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
             />
           </div>
         </div>
 
-        {/* Rooms Grid */}
         {filteredRooms.length === 0 ? (
-          <Card className="p-12 text-center">
+          <Card className="p-12 text-center bg-card rounded-lg">
             <div className="flex flex-col items-center gap-4">
-              <Users className="h-12 w-12 text-muted-foreground" />
-              <h3 className="text-xl font-semibold">
-                {searchTerm ? "No rooms found" : "No rooms available"}
+              <Users className="h-16 w-16 text-muted-foreground" />
+              <h3 className="text-2xl font-semibold">
+                {searchTerm ? "No rooms found" : "No public rooms available"}
               </h3>
               <p className="text-muted-foreground max-w-md">
                 {searchTerm
-                  ? "Try adjusting your search terms"
-                  : "Be the first to create a drawing room for others to discover"}
+                  ? "Try adjusting your search terms to find other public rooms."
+                  : "Why not be the first to create a public room and share your ideas with the world?"}
               </p>
-              {!searchTerm && (
-                <Link href="/create-room">
-                  <Button variant="primary" >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create First Room
-                  </Button>
-                </Link>
-              )}
+              <Link href="/create-room">
+                <Button variant="primary" size="lg">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create a Public Room
+                </Button>
+              </Link>
             </div>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredRooms.map((room) => (
               <Card
                 key={room.id}
-                className="p-6 hover:shadow-lg transition-shadow"
+                className="p-6 bg-card rounded-lg hover:shadow-xl transition-shadow flex flex-col justify-between"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold truncate">
-                    {room.slug}
-                  </h3>
+                <div>
+                  <div className="flex items-start justify-between mb-4">
+                    <h3 className="text-xl font-semibold truncate">
+                      {room.slug}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span>Created {formatDate(room.createdAt)}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4" />
+                      <span>{room._count?.chats || 0} participants</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    Created {formatDate(room.createdAt)}
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                  </div>
-                  <div className="text-sm text-muted-foreground">Hello</div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => joinRoom(room.id)}
-                    variant="primary"
-                    className="flex-1 flex items-center justify-center gap-2"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Join Room
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => joinRoom(room.id)}
+                  variant="secondary"
+                  className="w-full flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Join Room
+                </Button>
               </Card>
             ))}
           </div>
         )}
 
-        {/* Back to Home */}
-        <div className="mt-12 text-center">
+        <div className="mt-16 text-center">
           <Link href="/">
-            <Button variant="outline" >
+            <Button variant="outline" className="bg-blue-600/90 hover:bg-blue-500 text-white border-0 group-hover:bg-blue-600 transition-all duration-200 py-3">
               Back to Home
             </Button>
           </Link>

@@ -81,3 +81,12 @@ export function Container({
     </div>
   );
 }
+
+interface MainContentProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export function MainContent({ children, className }: MainContentProps) {
+  return <div className={className}>{children}</div>;
+}

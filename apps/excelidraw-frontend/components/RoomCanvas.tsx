@@ -4,7 +4,7 @@ import { WS_URL, HTTP_BACKEND } from "@/config";
 import { useEffect, useState } from "react";
 import { Canvas } from "./Canvas";
 import { ShareRoomModal } from "./ShareRoomModal";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui";
 import Link from "next/link";
 import { RoomInfo } from "@/types";
 import axios from "axios";

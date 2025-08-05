@@ -34,7 +34,7 @@ export function LoadingState({
   size = "md",
 }: LoadingStateProps) {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="p-8 text-center">
         <LoadingSpinner size={size} className="mx-auto mb-4" />
         <div className="text-lg">{title}</div>

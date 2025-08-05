@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui";
 import { Plus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { HTTP_BACKEND } from "@/config";

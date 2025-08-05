@@ -17,10 +17,26 @@ const menuItems = [
   },
 ];
 
+import { useRouter } from "next/navigation";
+
 export const Navbar = () => {
   const [menuState, setMenuState] = React.useState(false);
-
   const { setTheme } = useTheme();
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    router.push("/signin");
+  };
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -76,16 +92,24 @@ export const Navbar = () => {
                   <Moon className="absolute h-[1.0rem] w-[1.0rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
                   <span className="sr-only">Toggle theme</span>
                 </Button>
-                <Button asChild variant="outline" size="sm" className="bg-transparent">
-                  <Link href="#">
-                    <span>Login</span>
-                  </Link>
-                </Button>
-                <Button asChild size="sm" className="">
-                  <Link href="#">
-                    <span className="dark:text-white">Sign Up</span>
-                  </Link>
-                </Button>
+                {isLoggedIn ? (
+                  <Button size="sm" onClick={handleLogout}>
+                    <span className="dark:text-white">Logout</span>
+                  </Button>
+                ) : (
+                  <>
+                    <Button asChild variant="outline" size="sm" className="bg-transparent">
+                      <Link href="/signin">
+                        <span>Login</span>
+                      </Link>
+                    </Button>
+                    <Button asChild size="sm" className="">
+                      <Link href="/signup">
+                        <span className="dark:text-white">Sign Up</span>
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
